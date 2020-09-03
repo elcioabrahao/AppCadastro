@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    // fiz uma modificação nesse método !
+
     public void enviarNome(View view){
         // aqui dentro
         EditText editTextNome = (EditText)findViewById(R.id.nomeEditText);
