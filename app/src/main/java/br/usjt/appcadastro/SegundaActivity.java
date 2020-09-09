@@ -16,8 +16,10 @@ public class SegundaActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String nome = intent.getStringExtra("NOMEUSUARIO");
+        String cpf = intent.getStringExtra("CPFUSUARIO");
+        String email = intent.getStringExtra("EMAILUSUARIO");
         TextView textViewNome = (TextView)findViewById(R.id.nomeSegundaTelaTextView);
-        textViewNome.setText("Nome: "+nome);
+        textViewNome.setText("Olá "+nome+ " seu CPF é: "+cpf +" e seu email é "+email);
 
     }
 

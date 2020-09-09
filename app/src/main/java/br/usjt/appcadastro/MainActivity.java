@@ -22,10 +22,16 @@ public class MainActivity extends AppCompatActivity {
     public void enviarNome(View view){
         // aqui dentro
         EditText editTextNome = (EditText)findViewById(R.id.nomeEditText);
+        EditText editTextCPF = (EditText)findViewById(R.id.cpfEditText);
+        EditText editTextEmail = (EditText)findViewById(R.id.emailEditText);
         Log.d("LOGAPP",editTextNome.getText().toString());
         Intent intent = new Intent(this, SegundaActivity.class);
         String nome = editTextNome.getText().toString();
+        String cpf = editTextCPF.getText().toString();
+        String email = editTextEmail.getText().toString();
         intent.putExtra("NOMEUSUARIO",nome);
+        intent.putExtra("CPFUSUARIO",cpf);
+        intent.putExtra("EMAILUSUARIO",email);
         startActivity(intent);
     }
 
