@@ -34,6 +34,22 @@
         app:layout_constraintTop_toBottomOf="@+id/nomeSegundaTelaTextView"/>
 
     <Button
+        android:id="@+id/mapaButton"
+        android:onClick="verNoMaps"
+        android:layout_width="match_parent"
+        android:text="Ver no Maps"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="64dp"
+        android:background="@color/titulos_formulario"
+        android:textColor="#FFFFFF"
+        android:textSize="14pt"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/voltarButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
         android:id="@+id/voltarButton"
         android:onClick="voltar"
         android:layout_width="match_parent"

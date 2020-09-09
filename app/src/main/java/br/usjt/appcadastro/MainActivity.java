@@ -35,4 +35,35 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Log.d("CICLO_DE_VIDA", "MainActivity: onStart");
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Log.d("CICLO_DE_VIDA", "MainActivity: onResume");
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        Log.d("CICLO_DE_VIDA", "MainActivity: onPause");
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        Log.d("CICLO_DE_VIDA", "MainActivity: onStop");
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        Log.d("CICLO_DE_VIDA", "MainActivity: onDestroy");
+    }
+
+
 }
