@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Cadastro de Aluno</string>
+    <string name="semgps">Desculpe sem GPS disponível!</string>
+
 </resources>
