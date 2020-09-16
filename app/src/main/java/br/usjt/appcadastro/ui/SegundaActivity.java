@@ -1,4 +1,4 @@
-package br.usjt.appcadastro;
+package br.usjt.appcadastro.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import br.usjt.appcadastro.R;
 
 public class SegundaActivity extends AppCompatActivity {
 
