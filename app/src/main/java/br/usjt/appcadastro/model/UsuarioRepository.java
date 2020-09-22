@@ -14,12 +14,9 @@ public class UsuarioRepository {
         usuarioDao = db.usuarioDao();
         usuario = usuarioDao.getUsuario();
     }
-
-
     LiveData<Usuario> getUsuario() {
         return usuario;
     }
-
     void insert(Usuario usuario) {
         AlunoRoomDatabase.databaseWriteExecutor.execute(() -> {
             usuarioDao.insert(usuario);
