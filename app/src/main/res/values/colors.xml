@@ -6,4 +6,5 @@
     <color name="cinza">#c3c3c3</color>
     <color name="vermelho">#FF0000</color>
     <color name="titulos_formulario">#0000FF</color>
+    <color name="white">#FFFFFF</color>
 </resources>

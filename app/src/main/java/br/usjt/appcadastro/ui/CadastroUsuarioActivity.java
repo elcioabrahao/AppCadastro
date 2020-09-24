@@ -1,7 +1,10 @@
 package br.usjt.appcadastro.ui;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,59 +24,33 @@ import br.usjt.appcadastro.model.UsuarioViewModel;
 
 public class CadastroUsuarioActivity extends AppCompatActivity {
 
-    private UsuarioViewModel usuarioViewModel;
-    private EditText editTextNome;
-    private EditText editTextCPF;
-    private EditText editTextEmail;
-    private EditText editTextSenha;
-    private Usuario usuarioCorrente;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_usuario);
 
-        Hawk.init(this).build();
+        replaceFragment(R.id.frameLayoutCadastroUsuarioActivity,
+                PerfilFragment.newInstance(true,""),
+                PerfilFragment.PERFIL_FRAGMENT_TAG,
+                "home");
 
-        usuarioCorrente = new Usuario();
+    }
 
-        editTextNome = (EditText)findViewById(R.id.nomeEditText);
-        editTextCPF = (EditText)findViewById(R.id.cpfEditText);
-        editTextEmail = (EditText)findViewById(R.id.emailEditText);
-        editTextSenha = (EditText)findViewById(R.id.senhaEditText);
-
-        Log.d("CICLO_DE_VIDA","MainActivity --> onCreate");
-        usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
-
-        usuarioViewModel.getUsuario().observe(this, new Observer<Usuario>() {
-            @Override
-            public void onChanged(@Nullable final Usuario usuario) {
-                updateView(usuario);
-            }
-        });
+    protected void replaceFragment(@IdRes int containerViewId,
+                                   @NonNull Fragment fragment,
+                                   @NonNull String fragmentTag,
+                                   @Nullable String backStackStateName) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(containerViewId, fragment, fragmentTag)
+                .addToBackStack(backStackStateName)
+                .commit();
     }
 
 
-    private void updateView(Usuario usuario){
-        if(usuario != null && usuario.getId() > 0){
-            usuarioCorrente = usuario;
-            editTextNome.setText(usuario.getNome());
-            editTextCPF.setText(usuario.getCpf());
-            editTextEmail.setText(usuario.getEmail());
-            editTextSenha.setText(usuario.getSenha());
-        }
-    }
 
-    public void salvar(View view){
-        usuarioCorrente.setNome(editTextNome.getText().toString());
-        usuarioCorrente.setCpf(editTextCPF.getText().toString());
-        usuarioCorrente.setEmail(editTextEmail.getText().toString());
-        usuarioCorrente.setSenha(editTextSenha.getText().toString());
-        usuarioViewModel.insert(usuarioCorrente);
-        Hawk.put("tem_cadastro",true);
-        Toast.makeText(this,"Usuário salvo com sucesso!",Toast.LENGTH_SHORT).show();
-        finish();
-    }
 
     @Override
     protected void onStart(){
