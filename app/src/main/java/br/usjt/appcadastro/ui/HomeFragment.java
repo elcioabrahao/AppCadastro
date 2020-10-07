@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ public class HomeFragment extends Fragment {
     private List<Contato> contatos;
     private TextView conteudo;
     private Button buttonAtualizar;
+    private ContatoAdapter contatoAdapter;
 
     private String mParam1;
     private String mParam2;
@@ -57,6 +60,9 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        contatoAdapter = new ContatoAdapter();
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -68,13 +74,23 @@ public class HomeFragment extends Fragment {
             public void onChanged(List<Contato> contatosList) {
                 Log.d("RESPOSTA","NULLO DO RESPOSE");
                 if (contatosList != null) {
-                    String mensagem = "";
-                    for(Contato c: contatosList){
-                        mensagem+=c.getNome()+" "+c.getEmail()+"\n";
-                    }
-                    contatos = contatosList;
-                    conteudo.setText(mensagem);
+                    contatoAdapter.setResults(contatosList);
                 }
+            }
+        });
+
+        contatoAdapter.setOnItemClickListener(new ContatoAdapter.ClickListener() {
+            @Override
+            public void onItemClick(int position, View v, Contato contato) {
+                Log.d("FRAGMENTHOME", "onItemClick contato: " + contato.toString());
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frameLayoutMainActivity,
+                                ContatoFragment.newInstance("",contato),
+                                ContatoFragment.CONTATO_FRAGMENT_TAG)
+                        .addToBackStack("contato_click")
+                        .commit();
+
             }
         });
 
@@ -83,21 +99,27 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewContatos);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(contatoAdapter);
+
+
+
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
-        conteudo = view.findViewById(R.id.conteudo);
-        buttonAtualizar = view.findViewById(R.id.buttonAtualizar);
-        buttonAtualizar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("RESPOSTA","ONCLICK");
-                contatoViewModel.getContatos();
-            }
-        });
+        //contatoViewModel.getContatos();
+    }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        contatoViewModel.getContatos();
     }
 
 

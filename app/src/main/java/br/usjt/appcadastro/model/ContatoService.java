@@ -24,7 +24,7 @@ public interface ContatoService {
     @PUT("/api/a54241c45e264268bb3a8877f55c8d9b/contato/{id}")
     Call<ResponseBody> alterarContato(
             @Path("id") String id,
-            @Body Contato contato);
+            @Body ContatoSend contatoSend);
 
     @DELETE("/api/a54241c45e264268bb3a8877f55c8d9b/contato/{id}")
     Call<ResponseBody> deletarContato(

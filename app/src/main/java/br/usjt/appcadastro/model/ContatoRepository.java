@@ -22,10 +22,12 @@ public class ContatoRepository {
     private ContatoService contatoService;
     private MutableLiveData<List<Contato>> contatosResponseMutableLiveData;
     private MutableLiveData<Boolean> salvoSucessoMutableLiveData;
+    private MutableLiveData<Boolean> alteradoSucessoMutableLiveData;
 
     public ContatoRepository() {
         contatosResponseMutableLiveData = new MutableLiveData<>();
         salvoSucessoMutableLiveData = new MutableLiveData<>();
+        alteradoSucessoMutableLiveData = new MutableLiveData<>();
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.level(HttpLoggingInterceptor.Level.BODY);
@@ -67,6 +69,10 @@ public class ContatoRepository {
         return salvoSucessoMutableLiveData;
     }
 
+    public LiveData<Boolean> getAlteradoSucesso() {
+        return alteradoSucessoMutableLiveData;
+    }
+
     public void salvarContato(Contato contato){
 
         contatoService.salvarContato(contato)
@@ -88,8 +94,27 @@ public class ContatoRepository {
 
     }
 
-    public Call<ResponseBody> alterarContato(Contato contato){
-        return contatoService.alterarContato(contato.getId(), contato);
+    public void alterarContato(Contato contato){
+        Log.d("CONTATOKP","na repo");
+
+        ContatoSend contatoSend = new ContatoSend(contato.getNome(),contato.getEmail(),contato.getTelefone());
+
+        contatoService.alterarContato(contato.getId(),contatoSend)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.body() != null) {
+                            Log.d("RESPOSTA", "tenho resultato-->"+response.body());
+                            alteradoSucessoMutableLiveData.postValue(new Boolean(true));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.e("RESPOSTA", "FALHOU->"+t.getMessage());
+                        alteradoSucessoMutableLiveData.postValue(new Boolean(false));
+                    }
+                });
     }
 
     public Call<ResponseBody> deletarContato(Contato contato){

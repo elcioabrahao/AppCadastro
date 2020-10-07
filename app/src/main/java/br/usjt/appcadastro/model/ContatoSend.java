@@ -3,13 +3,8 @@ package br.usjt.appcadastro.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
+public class ContatoSend {
 
-public class Contato implements Serializable {
-
-    @SerializedName("_id")
-    @Expose
-    private String id;
     @SerializedName("nome")
     @Expose
     private String nome;
@@ -19,14 +14,6 @@ public class Contato implements Serializable {
     @SerializedName("telefone")
     @Expose
     private String telefone;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;
@@ -52,13 +39,9 @@ public class Contato implements Serializable {
         this.telefone = telefone;
     }
 
-    @Override
-    public String toString() {
-        return "Contato{" +
-                "id='" + id + '\'' +
-                ", nome='" + nome + '\'' +
-                ", email='" + email + '\'' +
-                ", telefone='" + telefone + '\'' +
-                '}';
+    public ContatoSend(String nome, String email, String telefone) {
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
     }
 }
