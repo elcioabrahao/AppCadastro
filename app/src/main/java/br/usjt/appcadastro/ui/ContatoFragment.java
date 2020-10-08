@@ -40,16 +40,16 @@ public class ContatoFragment extends Fragment {
 
 
     private String mParam1;
-    private String mParam2;
+    private Contato mParam2;
 
     public ContatoFragment() {
     }
 
-    public static ContatoFragment newInstance(String param1, String param2) {
+    public static ContatoFragment newInstance(String param1, Contato contato) {
         ContatoFragment fragment = new ContatoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_PARAM2, contato);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,15 +59,15 @@ public class ContatoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam2 = (Contato) getArguments().getSerializable(ARG_PARAM2);
         }
         contatoViewModel = new ViewModelProvider(this).get(ContatoViewModel.class);
         contatoViewModel.getSalvoSucesso().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable final Boolean sucesso) {
-                String mensagem = "Criação de contato falhou!";
+                String mensagem = "Contato falhou ao salvar!";
                 if(sucesso){
-                    mensagem = "Contato criado com sucesso!";
+                    mensagem = "Contato salvo com sucesso!";
                 }
                 Toast.makeText(getActivity(),mensagem,Toast.LENGTH_SHORT).show();
 
@@ -99,12 +99,31 @@ public class ContatoFragment extends Fragment {
             }
         });
 
+
+        if(mParam2 != null){
+            contatoCorrente = mParam2;
+            editTextNomeContato.setText(contatoCorrente.getNome());
+            editTextEmailContato.setText(contatoCorrente.getEmail());
+            editTextTelefoneContato.setText(contatoCorrente.getTelefone());
+        }
+
     }
 
     public void salvar(){
         contatoCorrente.setNome(editTextNomeContato.getText().toString());
         contatoCorrente.setEmail(editTextEmailContato.getText().toString());
         contatoCorrente.setTelefone(editTextTelefoneContato.getText().toString());
-        contatoViewModel.salvarContato(contatoCorrente);
+        if(mParam2 == null) {
+            contatoViewModel.salvarContato(contatoCorrente);
+        }else{
+            contatoViewModel.alterarContato(contatoCorrente);
+        }
+        limparCampos();
+    }
+
+    private void limparCampos(){
+        editTextNomeContato.setText("");;
+        editTextEmailContato.setText("");
+        editTextTelefoneContato.setText("");
     }
 }

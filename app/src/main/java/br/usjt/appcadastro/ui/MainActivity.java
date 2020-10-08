@@ -43,21 +43,21 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case R.id.contato:
                             replaceFragment(R.id.frameLayoutMainActivity,
-                                    ContatoFragment.newInstance("",""),
+                                    ContatoFragment.newInstance("",null),
                                     ContatoFragment.CONTATO_FRAGMENT_TAG,
-                                    "home");
+                                    "contato");
                             break;
                         case R.id.perfil:
                             replaceFragment(R.id.frameLayoutMainActivity,
                                     PerfilFragment.newInstance(false,""),
                                     PerfilFragment.PERFIL_FRAGMENT_TAG,
-                                    "home");
+                                    "perfil");
                             break;
                         case R.id.configuracao:
                             replaceFragment(R.id.frameLayoutMainActivity,
                                     ConfiguracaoFragment.newInstance("",""),
                                     ConfiguracaoFragment.CONFIGURACAO_FRAGMENT_TAG,
-                                    "home");
+                                    "config");
                             break;
                         default:
                             // nada!
