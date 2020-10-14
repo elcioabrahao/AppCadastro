@@ -1,29 +1,49 @@
 package br.usjt.appcadastro.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.orhanobut.hawk.Hawk;
 
-import java.util.List;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Objects;
 
+import br.usjt.appcadastro.BuildConfig;
 import br.usjt.appcadastro.R;
 import br.usjt.appcadastro.model.Contato;
 import br.usjt.appcadastro.model.ContatoViewModel;
-import br.usjt.appcadastro.model.Usuario;
-import br.usjt.appcadastro.model.UsuarioViewModel;
+
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class ContatoFragment extends Fragment {
@@ -37,7 +57,8 @@ public class ContatoFragment extends Fragment {
     private Contato contatoCorrente;
     private Button buttonSalvarContato;
     private ContatoViewModel contatoViewModel;
-
+    private TextView linkFoto;
+    private ImageView imageViewFoto;
 
     private String mParam1;
     private Contato mParam2;
@@ -91,6 +112,15 @@ public class ContatoFragment extends Fragment {
         editTextEmailContato = getView().findViewById(R.id.emailContatoEditText);
         editTextTelefoneContato = getView().findViewById(R.id.telefoneContatoEditText);
         buttonSalvarContato = getView().findViewById(R.id.enviarContatoButton);
+        linkFoto = getView().findViewById(R.id.linkFoto);
+        imageViewFoto = getView().findViewById(R.id.imageViewFoto);
+
+        linkFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tirarFoto();
+            }
+        });
 
         buttonSalvarContato.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,4 +156,103 @@ public class ContatoFragment extends Fragment {
         editTextEmailContato.setText("");
         editTextTelefoneContato.setText("");
     }
+
+    public void tirarFoto(){
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+//            startActivityForResult(takePictureIntent, 1);
+//        }
+        dispatchTakePictureIntent();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == 1 && resultCode == RESULT_OK) {
+//            Bundle extras = data.getExtras();
+//            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            imageViewFoto.setImageBitmap(imageBitmap);
+//        }
+
+       if (requestCode == 1 && resultCode == RESULT_OK) {
+           galleryAddPic();
+           setPic();
+        }
+    }
+
+    String currentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
+    static final int REQUEST_TAKE_PHOTO = 1;
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(Objects.requireNonNull(getActivity().getApplicationContext()),
+                        BuildConfig.APPLICATION_ID + ".provider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
+    }
+
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = imageViewFoto.getWidth();
+        int targetH = imageViewFoto.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+        imageViewFoto.setImageBitmap(bitmap);
+    }
+
 }
