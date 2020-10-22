@@ -19,6 +19,15 @@ public class Contato implements Serializable {
     @SerializedName("telefone")
     @Expose
     private String telefone;
+    @SerializedName("tipo_contato")
+    @Expose
+    private String tipoContato;
+    @SerializedName("privado")
+    @Expose
+    private boolean privado;
+    @SerializedName("imagem")
+    @Expose
+    private String imagem;
 
     public String getId() {
         return id;
@@ -50,6 +59,30 @@ public class Contato implements Serializable {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
+
+    public String getTipoContato() {
+        return tipoContato;
+    }
+
+    public void setTipoContato(String tipoContato) {
+        this.tipoContato = tipoContato;
+    }
+
+    public boolean isPrivado() {
+        return privado;
+    }
+
+    public void setPrivado(boolean privado) {
+        this.privado = privado;
     }
 
     @Override

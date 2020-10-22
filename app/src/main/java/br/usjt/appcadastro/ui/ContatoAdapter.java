@@ -3,6 +3,7 @@ package br.usjt.appcadastro.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import br.usjt.appcadastro.R;
 import br.usjt.appcadastro.model.Contato;
+import br.usjt.appcadastro.util.ImageUtil;
 
 public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoHolder> {
     private List<Contato> results = new ArrayList<>();
@@ -34,6 +36,17 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoH
         holder.textViewNome.setText(contato.getNome());
         holder.textViewEmail.setText(contato.getEmail());
         holder.textViewTelefone.setText(contato.getTelefone());
+        holder.textViewTipoContato.setText(contato.getTipoContato());
+        if(contato.isPrivado()){
+            holder.textViewPrivado.setText("Contato Privado");
+        }else{
+            holder.textViewPrivado.setText("Contato Público");
+        }
+        if(contato.getImagem()==null || contato.getImagem().isEmpty()){
+            holder.fotoCard.setImageResource(R.drawable.ic_place_holder);
+        }else{
+            holder.fotoCard.setImageBitmap(ImageUtil.decode(contato.getImagem()));
+        }
 
 
 
@@ -53,6 +66,9 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoH
         private TextView textViewNome;
         private TextView textViewEmail;
         private TextView textViewTelefone;
+        private TextView textViewTipoContato;
+        private TextView textViewPrivado;
+        private ImageView fotoCard;
 
 
         public ContatoHolder(@NonNull View itemView) {
@@ -60,6 +76,9 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoH
             textViewNome = itemView.findViewById(R.id.textViewNomeContato);
             textViewEmail = itemView.findViewById(R.id.textViewEmailContato);
             textViewTelefone = itemView.findViewById(R.id.textViewTelefoneContato);
+            textViewTipoContato = itemView.findViewById(R.id.textViewTipoContato);
+            textViewPrivado = itemView.findViewById(R.id.textViewPrivado);
+            fotoCard = itemView.findViewById(R.id.fotoCard);
             itemView.setOnClickListener(this);
         }
 

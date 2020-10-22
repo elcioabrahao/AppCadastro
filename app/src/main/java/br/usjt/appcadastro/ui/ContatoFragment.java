@@ -18,9 +18,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,15 +34,13 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import br.usjt.appcadastro.BuildConfig;
 import br.usjt.appcadastro.R;
 import br.usjt.appcadastro.model.Contato;
 import br.usjt.appcadastro.model.ContatoViewModel;
-import br.usjt.appcadastro.model.Usuario;
-import br.usjt.appcadastro.model.UsuarioViewModel;
+import br.usjt.appcadastro.util.ImageUtil;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -56,10 +58,10 @@ public class ContatoFragment extends Fragment {
     private ContatoViewModel contatoViewModel;
     private ImageView imageViewFoto;
     private TextView textViewLinkFoto;
-
-
     private String mParam1;
     private Contato mParam2;
+    private Spinner spinner1;
+    private Switch switch1;
 
     public ContatoFragment() {
     }
@@ -112,6 +114,19 @@ public class ContatoFragment extends Fragment {
         buttonSalvarContato = getView().findViewById(R.id.enviarContatoButton);
         imageViewFoto = getView().findViewById(R.id.imageViewFoto);
         textViewLinkFoto = getView().findViewById(R.id.textViewLinkFoto);
+        spinner1 = getView().findViewById(R.id.spinner1);
+        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("ITEMSELECIONADO", "POSIÇÃO-->"+position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        switch1 = getView().findViewById(R.id.switch1);
 
         textViewLinkFoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,14 +148,26 @@ public class ContatoFragment extends Fragment {
             editTextNomeContato.setText(contatoCorrente.getNome());
             editTextEmailContato.setText(contatoCorrente.getEmail());
             editTextTelefoneContato.setText(contatoCorrente.getTelefone());
+            switch1.setChecked(contatoCorrente.isPrivado());
+            if(contatoCorrente.getImagem() == null || contatoCorrente.getImagem().isEmpty()){
+                imageViewFoto.setImageResource(R.drawable.ic_place_holder);
+            }else{
+                imageViewFoto.setImageBitmap(ImageUtil.decode(contatoCorrente.getImagem()));
+            }
+            spinner1.setSelection(((ArrayAdapter)spinner1.getAdapter()).getPosition(contatoCorrente.getTipoContato()));
         }
 
+
     }
+
+
 
     public void salvar(){
         contatoCorrente.setNome(editTextNomeContato.getText().toString());
         contatoCorrente.setEmail(editTextEmailContato.getText().toString());
         contatoCorrente.setTelefone(editTextTelefoneContato.getText().toString());
+        contatoCorrente.setTipoContato(spinner1.getSelectedItem().toString());
+        contatoCorrente.setPrivado(switch1.isChecked());
         if(mParam2 == null) {
             contatoViewModel.salvarContato(contatoCorrente);
         }else{
@@ -153,11 +180,14 @@ public class ContatoFragment extends Fragment {
         editTextNomeContato.setText("");;
         editTextEmailContato.setText("");
         editTextTelefoneContato.setText("");
+        imageViewFoto.setImageResource(R.drawable.ic_place_holder);
+        spinner1.setSelection(0);
+        switch1.setChecked(false);
     }
 
     private void tirarFoto(){
-//        dispatchTakePictureIntent();
-        dispatchTakePictureIntentFile();
+        dispatchTakePictureIntent();
+//        dispatchTakePictureIntentFile();
     }
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -171,15 +201,17 @@ public class ContatoFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            imageViewFoto.setImageBitmap(imageBitmap);
-//        }
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            galleryAddPic();
-            setPic();
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageViewFoto.setImageBitmap(imageBitmap);
+            contatoCorrente.setImagem(ImageUtil.encode(imageBitmap));
+            Log.d("IMAGEMBITMAPENCODED-->",contatoCorrente.getImagem());
         }
+//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+//            galleryAddPic();
+//            setPic();
+//        }
 
     }
 
@@ -262,6 +294,9 @@ public class ContatoFragment extends Fragment {
 
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
         imageViewFoto.setImageBitmap(bitmap);
+        contatoCorrente.setImagem(ImageUtil.encode(bitmap));
+        Log.d("IMAGEMBITMAPENCODED-->",contatoCorrente.getImagem());
+
     }
 
 }

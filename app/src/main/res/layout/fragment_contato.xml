@@ -15,7 +15,7 @@
         android:text="Cadastro de Contato"
         android:textSize="14pt"
         android:textColor="@color/titulos_formulario"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layout_constraintTop_toBottomOf="@+id/nomeContatoEditText"
@@ -72,12 +72,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Telefone"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layout_constraintTop_toBottomOf="@+id/emailContatoEditText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/tipo_contato_arrays"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/telefoneContatoEditText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Privado: "
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/spinner1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+
+
+
+
 
     <Button
         android:id="@+id/enviarContatoButton"
@@ -93,5 +122,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

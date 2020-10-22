@@ -4,4 +4,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string-array name="tipo_contato_arrays">
+        <item>Família</item>
+        <item>Amigos</item>
+        <item>Trabalho</item>
+        <item>Escola</item>
+        <item>Clube</item>
+    </string-array>
+
 </resources>

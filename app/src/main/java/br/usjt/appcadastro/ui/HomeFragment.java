@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.orhanobut.hawk.Hawk;
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment {
     private TextView conteudo;
     private Button buttonAtualizar;
     private ContatoAdapter adapter;
+    private ProgressBar progressBar;
 
     private String mParam1;
     private String mParam2;
@@ -77,6 +79,7 @@ public class HomeFragment extends Fragment {
                 if (contatosList != null) {
                     adapter.setResults(contatosList);
                 }
+                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -107,11 +110,13 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
+        progressBar = view.findViewById(R.id.progressBar);
     }
 
     @Override
     public void onResume(){
         super.onResume();
+        progressBar.setVisibility(View.VISIBLE);
         contatoViewModel.getContatos();
     }
 
